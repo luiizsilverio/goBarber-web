@@ -11,12 +11,18 @@ import { Container, Content, Background } from './styles';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 
+interface SignInFormData {
+    email: string;
+    password: string;
+}
+
 const SignIn: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
 
-    const { signIn } = useContext(AuthContext);
+    const { user, signIn } = useContext(AuthContext);
+    console.log('Bem-vindo,', user);
 
-    const handleSubmit = useCallback(async (data: object) => {
+    const handleSubmit = useCallback(async (data: SignInFormData) => {
         // define o  formato da validação
         const schema = Yup.object().shape({
             email: Yup.string()
@@ -33,7 +39,10 @@ const SignIn: React.FC = () => {
                 abortEarly: false,  // faz todas as validações; não pára no primeiro erro
             });
 
-            signIn();
+            !!signIn && signIn({
+                email: data.email,
+                password: data.password,
+            });
         }
         catch (err) {
             //console.log(err.errors);
